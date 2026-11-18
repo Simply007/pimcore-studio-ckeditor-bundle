@@ -444,6 +444,14 @@ Backend prerequisites beyond the key, with pointers:
   `pimcore_type` attributes.
 - No translations shipped; no automated tests.
 
+## Agent skill
+
+`skills/ckeditor-pimcore/` is an agent skill for this bundle: installing and configuring it, the premium path, and the Studio internals for anyone building or extending a wysiwyg editor bundle. It is the Pimcore worked example of the general [`ckeditor-integration`](https://github.com/Simply007/ckeditor-integration-skills) skill and complements the official [ckeditor/skills](https://github.com/ckeditor/skills).
+
+```bash
+npx skills add Simply007/pimcore-studio-ckeditor-bundle
+```
+
 ## Layout
 
 ```
@@ -452,6 +460,7 @@ src/                         Bundle class, configuration, app config provider, e
                              Cloud Services token generator + controller, premium CSP subscriber
 config/studio_ui.yaml        Tags the providers for Studio UI (incl. document editor iframe)
 config/pimcore/routing.yaml  Token endpoint route (auto-loaded by Pimcore's bundle routing loader)
+skills/ckeditor-pimcore/     Agent skill (SKILL.md + references)
 assets/studio/               TypeScript frontend (rsbuild + module federation, port 3033)
 public/studio/build/<id>/    Committed frontend build (entrypoints.json consumed by PHP)
 ```
