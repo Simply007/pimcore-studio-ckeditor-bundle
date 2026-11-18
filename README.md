@@ -446,7 +446,7 @@ Backend prerequisites beyond the key, with pointers:
 
 ## Agent skill
 
-`skills/ckeditor-pimcore/` is an agent skill for this bundle: installing and configuring it, the premium path, and the Studio internals for anyone building or extending a wysiwyg editor bundle. It is the Pimcore worked example of the general [`ckeditor-integration`](https://github.com/Simply007/ckeditor-integration-skills) skill and complements the official [ckeditor/skills](https://github.com/ckeditor/skills).
+`skills/ckeditor-pimcore/` is an agent skill for this bundle: installing and configuring it, the premium path, and the Studio internals for anyone building or extending a wysiwyg editor bundle. It is the Pimcore worked example of the general [`ckeditor-integration`](https://github.com/Simply007/pcdd26-pimcore-ai-guidepost/tree/main/skills/ckeditor-integration) skill, which lives in the guidepost demo repository together with its end-to-end test, and complements the official [ckeditor/skills](https://github.com/ckeditor/skills).
 
 ```bash
 npx skills add Simply007/pimcore-studio-ckeditor-bundle

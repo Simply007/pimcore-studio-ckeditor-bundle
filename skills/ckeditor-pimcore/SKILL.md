@@ -27,7 +27,8 @@ metadata:
 # CKEditor in Pimcore Studio
 
 The Pimcore answer to each point of the `ckeditor-integration` skill (read
-that one for the concepts). Editor-side setup (plugins, toolbar items, license
+that one for the concepts; it lives in
+https://github.com/Simply007/pcdd26-pimcore-ai-guidepost under `skills/`). Editor-side setup (plugins, toolbar items, license
 semantics): the `ckeditor` skill. Status: community package and proof of
 concept, not reviewed by Pimcore. Names: Composer package
 `simply007/ckeditor-studio-bundle`, GitHub repository
