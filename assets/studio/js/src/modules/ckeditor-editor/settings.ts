@@ -27,11 +27,7 @@ export interface CKEditorStudioPremiumSettings {
   }
 }
 
-export type EditorChoice = 'ckeditor' | 'quill' | 'default'
-
 export interface CKEditorStudioSettings {
-  /** Which editor owns Studio's wysiwyg slot (ckeditor_studio.editor). */
-  editor: EditorChoice
   /** The value handed to CKEditor: a configured commercial key, or 'GPL'. */
   licenseKey: string
   /** True only when a real key is configured (CKEDITOR_LICENSE_KEY / ckeditor_studio.license_key). */
@@ -42,7 +38,6 @@ export interface CKEditorStudioSettings {
 
 /** Shape of the `ckeditorStudio` app config key as the PHP provider emits it. */
 interface CKEditorStudioAppConfig {
-  editor?: string
   licenseKey?: string | null
   toolbar?: unknown
   premium?: {
@@ -80,7 +75,6 @@ export const getStudioSettings = (): CKEditorStudioSettings => {
   const configuredKey = typeof raw.licenseKey === 'string' && raw.licenseKey !== '' ? raw.licenseKey : null
 
   return {
-    editor: raw.editor === 'quill' || raw.editor === 'default' ? raw.editor : 'ckeditor',
     licenseKey: configuredKey ?? 'GPL',
     hasLicenseKey: configuredKey !== null,
     toolbar: isToolbarConfig(raw.toolbar) ? raw.toolbar : DEFAULT_TOOLBAR,

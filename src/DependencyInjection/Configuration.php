@@ -15,7 +15,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * ckeditor_studio:
- *   editor: ckeditor                             # ckeditor | quill | default (single selection point)
  *   license_key: '%env(CKEDITOR_LICENSE_KEY)%'   # default; empty = free feature set with licenseKey 'GPL'
  *   toolbar: [ 'undo', 'redo', '|', ... ]        # default preset below
  *   premium:
@@ -57,14 +56,16 @@ final class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-                ->enumNode('editor')
-                    ->info(
-                        'Which editor Studio uses for wysiwyg fields: "ckeditor" (this bundle), "quill" (the editor another '
-                        . 'bundle such as PimcoreQuillBundle registered; falls back to CKEditor when none did) or "default" '
-                        . '(Studio\'s built-in editor). Editor bundles can stay enabled side by side.'
+                // Removed in 0.3.0: the bundle now takes the wysiwyg slot when it is
+                // enabled, like Pimcore's own editor bundles. Kept for one release so
+                // existing configs keep booting; the value is ignored.
+                ->scalarNode('editor')
+                    ->setDeprecated(
+                        'simply007/ckeditor-studio-bundle',
+                        '0.3.0',
+                        'The "%node%" option at "%path%" has no effect anymore: enable exactly one editor bundle '
+                        . 'in config/bundles.php instead (see the README, "Editor bundles"). It will be removed in 0.4.0.'
                     )
-                    ->values(['ckeditor', 'quill', 'default'])
-                    ->defaultValue('ckeditor')
                 ->end()
                 ->scalarNode('license_key')
                     ->info(
