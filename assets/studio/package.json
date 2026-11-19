@@ -7,7 +7,8 @@
     "dev": "NODE_ENV=development rsbuild build",
     "dev-server": "NODE_ENV=dev-server rsbuild dev",
     "build": "rsbuild build",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "node --test 'js/src/**/*.test.ts'"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^12.0.0",

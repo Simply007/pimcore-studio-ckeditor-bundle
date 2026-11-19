@@ -16,5 +16,8 @@
   },
   "include": [
     "./js/**/*"
+  ],
+  "exclude": [
+    "./js/**/*.test.ts"
   ]
 }

@@ -35,7 +35,6 @@ final class StudioAppConfigProvider implements AppConfigProviderInterface
      * @param array<string, mixed> $premium
      */
     public function __construct(
-        private readonly string $editor,
         private readonly string $licenseKey,
         private readonly array $toolbar,
         private readonly array $premium,
@@ -70,8 +69,6 @@ final class StudioAppConfigProvider implements AppConfigProviderInterface
 
         return [
             'ckeditorStudio' => [
-                // Which editor owns Studio's wysiwyg slot; applied by the frontend selector.
-                'editor' => $this->editor,
                 // null = not configured = frontend falls back to licenseKey 'GPL'.
                 'licenseKey' => $this->licenseKey === '' ? null : $this->licenseKey,
                 'toolbar' => array_values($this->toolbar),

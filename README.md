@@ -87,9 +87,8 @@ bin/console assets:install public --symlink --relative
 bin/console cache:clear
 ```
 
-Other editor bundles (for example PimcoreQuillBundle) can stay enabled; pick the
-editor with `ckeditor_studio.editor` (see "Editor selection") and open Studio: wysiwyg
-fields render the selected editor.
+Then open Studio: every wysiwyg field renders CKEditor. Disable any other editor
+bundle first (see "Editor bundles").
 
 ## Configuration
 
@@ -97,30 +96,33 @@ All configuration lives under the `ckeditor_studio` key, for example in
 `config/packages/ckeditor_studio.yaml`. Everything is optional; with no config at all
 the editor runs the open source feature set with the default toolbar.
 
-### Editor selection
+### Editor bundles
 
-Several wysiwyg editor bundles can stay enabled side by side; one value decides which
-editor Studio uses:
+Pimcore ships its own wysiwyg editor bundles for Studio: Quill (`pimcore/quill-bundle`,
+the 2026 skeleton default, deprecated from the 2027 release line), the Pimcore WYSIWYG
+Editor (`pimcore/pimcore-wysiwyg-editor`, its replacement) and TinyMCE
+(`pimcore/tinymce-bundle`, Professional and Enterprise editions). This bundle works the
+same way: it puts its editor into Studio's single `wysiwyg.editor` slot.
 
-```yaml
-ckeditor_studio:
-  editor: ckeditor   # ckeditor (default) | quill | default
+Enable exactly one editor bundle. Studio has no arbitration between them (the last
+`override()` of the slot wins), which is also why Pimcore's docs say to keep only one
+active. To switch from the skeleton's Quill to CKEditor:
+
+```bash
+composer remove pimcore/quill-bundle
+# remove Pimcore\Bundle\QuillBundle\PimcoreQuillBundle from config/bundles.php
+composer require simply007/ckeditor-studio-bundle
+bin/console cache:clear
 ```
 
-- `ckeditor`: this bundle's editor.
-- `quill`: the editor another bundle registered (PimcoreQuillBundle); when no other
-  editor bundle is enabled, it falls back to CKEditor with a console warning.
-- `default`: Studio's built-in editor.
+Both editors store plain HTML in the same fields, so existing content stays. Check a
+load, save and reload round trip on real content before you switch a live project.
+Applies to data object fields and document editables (the editmode iframe
+bootstraps plugins the same way).
 
-Switching needs only `cache:clear` (the value reaches the browser through the app
-config, no rebuild). How it works: Studio's component registry has no arbitration
-(the last `override()` of the `wysiwyg.editor` slot wins), but its order is
-deterministic: Studio registers its built-in editor first, then plugin modules
-initialize in ascending plugin `priority`. This bundle ships two plugins, a probe at
-priority -1000 that records Studio's built-in editor before any editor bundle runs,
-and the selector at priority 1000 that runs after every other editor bundle and
-applies the configured choice. Applies to data object fields and document editables
-(the editmode iframe bootstraps plugins the same way).
+Upgrading from 0.2: the `ckeditor_studio.editor` option (`ckeditor` | `quill` |
+`default`) is deprecated and ignored; remove it from your config. It will be removed in
+0.4.0.
 
 ### License key gating
 

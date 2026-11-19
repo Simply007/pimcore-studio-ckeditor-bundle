@@ -60,23 +60,23 @@ read-only deployments; locally this is a non-issue.
 4. Browser console: no module federation load errors, no CKEditor license errors
    (`licenseKey: 'GPL'` is set in the component).
 
-## 6. Known gotcha: override order vs quill-bundle
+## 6. One editor bundle at a time
 
-`pimcore/quill-bundle` is installed AND enabled in this skeleton, and it overrides the
+`pimcore/quill-bundle` is installed AND enabled in the skeleton, and it overrides the
 same component (`componentConfig.wysiwyg.editor.name`). Both plugins call
 `componentRegistry.override(...)` at startup; whichever runs last wins, and the order
-follows entry point registration order, which is not guaranteed.
+follows entry point registration order, which is not guaranteed. Pimcore's own docs
+say to keep only one editor bundle active, and this bundle follows that rule.
 
-If Quill still renders:
+Disable the Quill bundle before testing:
 
 ```bash
-# Option A (clean for the demo): disable the Quill bundle
-# edit config/bundles.php: set PimcoreQuillBundle => ['all' => false] or remove the line
+# edit config/bundles.php: remove the PimcoreQuillBundle line (or set ['all' => false])
 docker compose exec php bin/console cache:clear
 ```
 
-Composer still requires `pimcore/quill-bundle` (platform dependency); only its bundle
-registration is disabled. Document the outcome either way, it is a finding for the talk.
+Composer may still require `pimcore/quill-bundle`; only its bundle registration needs
+to go. `composer remove pimcore/quill-bundle` is the clean version.
 
 ## 7. Functional checks (minimal viable)
 
