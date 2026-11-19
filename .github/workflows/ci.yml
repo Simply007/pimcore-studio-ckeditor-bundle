@@ -41,6 +41,8 @@ jobs:
       - run: npm ci
       - name: Type check
         run: npm run check-types
+      - name: Unit tests
+        run: npm test
       - name: Record the committed build id
         run: ls ../../public/studio/build > "$RUNNER_TEMP/committed-build"
       - name: Production build

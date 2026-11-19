@@ -1,11 +1,14 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
+import { isStudioDrag, studioDropEffect } from './studio-drop'
 import {
   Alignment,
   BlockQuote,
   Bold,
   ClassicEditor,
   type Editor as EditorInstance,
+  type ViewDocumentDragOverEvent,
+  type ViewDocumentDropEvent,
   Essentials,
   Fullscreen,
   GeneralHtmlSupport,
@@ -271,8 +274,32 @@ const Editor = forwardRef<WysiwygEditorRef, EditorProps>(
       }
     }, [defaultValue, premium])
 
+    // Studio tree drags (assets, documents, data objects): give them the drop
+    // effect they allow, or the browser cancels the drop (see studio-drop.ts),
+    // and move the caret to the drop point so onDrop inserts there.
+    const acceptStudioDrops = (editor: EditorInstance): void => {
+      const viewDocument = editor.editing.view.document
+      editor.listenTo<ViewDocumentDragOverEvent>(viewDocument, 'dragover', (_evt, data) => {
+        const effect = studioDropEffect(data.dataTransfer.types, data.dataTransfer.effectAllowed)
+        if (effect !== null) {
+          data.dataTransfer.dropEffect = effect
+        }
+      }, { priority: 'lowest' })
+      editor.listenTo<ViewDocumentDropEvent>(viewDocument, 'drop', (_evt, data) => {
+        const target = data.dropRange
+        if (!isStudioDrag(data.dataTransfer.types) || target === undefined || target === null) {
+          return
+        }
+        const modelRange = editor.editing.mapper.toModelRange(target)
+        editor.model.change((writer) => {
+          writer.setSelection(modelRange)
+        })
+      }, { priority: 'high' })
+    }
+
     const handleReady = (editor: EditorInstance): void => {
       editorInstanceRef.current = editor
+      acceptStudioDrops(editor)
       syncRootTitle(editor)
       checkCharCount(editor, editor.getData())
     }
