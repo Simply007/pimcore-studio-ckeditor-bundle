@@ -40,8 +40,8 @@ premium locally"). Experiment log on the agent skills used to build it: see
 - Classic editor, open source build (npm packages `ckeditor5` +
   `@ckeditor/ckeditor5-react`), with license-key gating for premium use (see below).
 - Asset/document/object drag and drop inserts images and links with `pimcore_id` /
-  `pimcore_type` attributes; `GeneralHtmlSupport` keeps those attributes (plus
-  class/id/style) in the data.
+  `pimcore_type` attributes, also when dropped onto selected text; `GeneralHtmlSupport`
+  keeps those attributes (plus class/id/style) in the data.
 
 ## How it works
 
@@ -442,9 +442,7 @@ Backend prerequisites beyond the key, with pointers:
   per-channel roles.
 - Pimcore's per-field `editorConfig` is Quill-shaped in 2026.x; no mapping to
   CKEditor options is implemented (pass-through only).
-- Dropping an element onto selected text applies only `href`, not the `pimcore_id` /
-  `pimcore_type` attributes.
-- No translations shipped; no automated tests.
+- No translations shipped.
 
 ## Layout
 

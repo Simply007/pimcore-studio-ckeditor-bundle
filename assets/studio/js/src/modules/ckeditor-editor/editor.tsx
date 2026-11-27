@@ -34,6 +34,7 @@ import { toCssDimension } from '@pimcore/studio-ui-bundle/utils'
 import { useTranslation } from '@pimcore/studio-ui-bundle/app'
 import { useOptionalElementContext } from '@pimcore/studio-ui-bundle/modules/element'
 import { getStudioSettings } from './settings'
+import { pimcoreReferenceUpdates } from './pimcore-reference'
 import {
   EMPTY_PREMIUM_EXTENSIONS,
   isPremiumRequested,
@@ -378,9 +379,20 @@ const Editor = forwardRef<WysiwygEditorRef, EditorProps>(
     function insertElementLink (editor: EditorInstance, uri: string, id: unknown, type?: string): void {
       const selection = editor.model.document.selection
       if (!selection.isCollapsed) {
-        // Text is selected: turn it into a link. Demo limitation: the pimcore_id /
-        // pimcore_type attributes are not applied to an existing selection here.
-        editor.execute('link', uri)
+        // Text is selected: the link command turns it into a link, but it only
+        // takes a URL. The Pimcore reference goes on the same text through
+        // General HTML Support (htmlA), in the same change, so it is one undo step.
+        const model = editor.model
+        const reference = { id: String(id), ...(type !== undefined ? { type } : {}) }
+        model.change((writer) => {
+          editor.execute('link', uri)
+          const items = Array.from(model.document.selection.getRanges()).flatMap((range) => Array.from(range.getItems()))
+          const updates = pimcoreReferenceUpdates(items, uri, reference)
+            .map(({ item, value }) => ({ range: writer.createRangeOn(item), value }))
+          for (const { range, value } of updates) {
+            writer.setAttribute('htmlA', value, range)
+          }
+        })
         return
       }
 
