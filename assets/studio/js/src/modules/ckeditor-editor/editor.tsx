@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
-import { isStudioDrag, studioDropEffect } from './studio-drop'
+import { dropOnSelection, isStudioDrag, studioDropEffect } from './studio-drop'
 import {
   Alignment,
   BlockQuote,
@@ -277,7 +277,8 @@ const Editor = forwardRef<WysiwygEditorRef, EditorProps>(
 
     // Studio tree drags (assets, documents, data objects): give them the drop
     // effect they allow, or the browser cancels the drop (see studio-drop.ts),
-    // and move the caret to the drop point so onDrop inserts there.
+    // and move the caret to the drop point so onDrop inserts there. A drop on
+    // selected text keeps the selection, so onDrop turns it into a link.
     const acceptStudioDrops = (editor: EditorInstance): void => {
       const viewDocument = editor.editing.view.document
       editor.listenTo<ViewDocumentDragOverEvent>(viewDocument, 'dragover', (_evt, data) => {
@@ -292,6 +293,9 @@ const Editor = forwardRef<WysiwygEditorRef, EditorProps>(
           return
         }
         const modelRange = editor.editing.mapper.toModelRange(target)
+        if (dropOnSelection(editor.model.document.selection.getRanges(), modelRange.start)) {
+          return
+        }
         editor.model.change((writer) => {
           writer.setSelection(modelRange)
         })
