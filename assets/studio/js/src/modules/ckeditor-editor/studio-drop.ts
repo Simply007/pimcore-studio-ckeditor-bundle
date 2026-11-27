@@ -37,3 +37,31 @@ export const studioDropEffect = (
       return 'move'
   }
 }
+
+/** The parts of a model range that dropOnSelection reads. */
+export interface SelectedRange<P> {
+  readonly start: P
+  readonly end: P
+  readonly isCollapsed: boolean
+  containsPosition: (position: P) => boolean
+}
+
+/**
+ * Whether a drop lands on the selected text (inside it or at its edge).
+ * Then the drop acts on the selection, such as turning it into a link,
+ * instead of moving the caret to the drop point.
+ */
+export const dropOnSelection = <P extends { isEqual: (other: P) => boolean }>(
+  selection: Iterable<SelectedRange<P>>,
+  drop: P
+): boolean => {
+  for (const range of selection) {
+    if (range.isCollapsed) {
+      continue
+    }
+    if (range.containsPosition(drop) || range.start.isEqual(drop) || range.end.isEqual(drop)) {
+      return true
+    }
+  }
+  return false
+}
